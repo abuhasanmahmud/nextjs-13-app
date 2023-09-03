@@ -68,7 +68,6 @@ const Nav = () => {
                   Sign in
                 </button>
               ))}
-            asdaldfaldfk
           </>
         )}
       </div>
