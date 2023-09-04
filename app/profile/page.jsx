@@ -11,17 +11,18 @@ const MyProfile = () => {
   const { data: session } = useSession();
 
   const [myPosts, setMyPosts] = useState([]);
+  console.log("mypost", myPosts);
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const response = await fetch(`/api/users/${session?.user.id}/posts`);
+      const response = await fetch(`/api/users/${session?.user._id}/posts`);
       const data = await response.json();
 
       setMyPosts(data);
     };
 
-    if (session?.user.id) fetchPosts();
-  }, [session?.user.id]);
+    if (session?.user._id) fetchPosts();
+  }, [session?.user._id]);
 
   const handleEdit = (post) => {
     router.push(`/update-prompt?id=${post._id}`);
