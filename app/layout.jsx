@@ -1,5 +1,6 @@
 import "@styles/globals.css";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Nav from "@components/Nav";
 import Provider from "@components/Provider";
 
@@ -15,10 +16,12 @@ const RootLayout = ({ children }) => (
         <div className="main">
           <div className="gradient" />
         </div>
-
+       
         <main className="app">
+        <ToastContainer />
           <Nav />
           {children}
+          
         </main>
       </Provider>
     </body>

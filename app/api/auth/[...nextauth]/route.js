@@ -5,7 +5,8 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import User from "@models/user";
 import { connectToDB } from "@utils/database";
 import bcrypt from "bcrypt";
-// console.log("process.env.GOOGLE_ID", process.env.GOOGLE_ID);
+import { redirect } from "next/navigation";
+// import { signInWithCredentials } from "@action/authActions";
 
 connectToDB();
 
@@ -75,18 +76,15 @@ async function signInWithOAuth({ account, profile }) {
 
 async function getUserByEmail({ email }) {
   const user = await User.findOne({ email }).select("-password");
-  if (!user) throw Error("email dose not exist");
+  if (!user) throw Error("email or password dose not exist in get by email");
   return user;
 }
 
 async function signInWithCredentials({ email, password }) {
-  console.log("email & password", email, password);
-
   const user = await User.findOne({ email });
-  if (!user) throw new Error("email does not exist");
+  if (!user) throw new Error("email or password does not match");
 
   const compare = await bcrypt.compare(password, user.password);
-  if (!compare) throw new Error("password does not match");
+  if (!compare) throw new Error("Email or password does not match");
   return { ...user._doc, _id: user._id.toString() };
-  // return user;
 }

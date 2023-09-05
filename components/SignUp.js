@@ -6,8 +6,10 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { signUpCredentials } from "@action/authActions";
 import { toast } from "react-toastify";
+import { signIn } from "next-auth/react";
+import { Circles } from "react-loader-spinner";
 
-const SignUp = () => {
+const SignUp = ({ callbackUrl }) => {
   const [submitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const {
@@ -19,35 +21,33 @@ const SignUp = () => {
   } = useForm();
   const handelSignUpCredentials = async (data) => {
     setIsSubmitting(true);
-    reset();
+
     const username = data.name;
     const email = data.email;
     const password = data.password;
+
     const res = await signUpCredentials({ username, email, password });
-    console.log("res", res);
-    if (res) {
-      alert(res.msg);
-      setIsSubmitting(true);
+    console.log("res is", res);
+    if (res?.msg) {
+      toast.success(`for registration successfully check your email ${data.email}`);
+      setIsSubmitting(false);
+      reset();
     } else {
-      alert("error");
-      setIsSubmitting(true);
+      toast.error(res.err);
+      setIsSubmitting(false);
+      reset();
     }
   };
   return (
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
-          <img
-            className="mx-auto h-10 w-auto"
-            src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-            alt="Your Company"
-          />
-          <h2 className="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+          <h2 className=" text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
             Sign in to your account
           </h2>
         </div>
 
-        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
+        <div className="mt-4 sm:mx-auto sm:w-full sm:max-w-[480px]">
           <div className="bg-white px-6 py-12 shadow sm:rounded-lg sm:px-12">
             <form className="space-y-6" action="#" onSubmit={handleSubmit(handelSignUpCredentials)}>
               <div>
@@ -142,11 +142,25 @@ const SignUp = () => {
               <div>
                 <button
                   type="submit"
-                  disabled={true}
+                  disabled={submitting}
                   className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >
                   Create account
                 </button>
+                {submitting && (
+                  <>
+                    {" "}
+                    <Circles
+                      height="80"
+                      width="80"
+                      color="#4fa94d"
+                      ariaLabel="circles-loading"
+                      wrapperStyle={{}}
+                      wrapperClass=""
+                      visible={true}
+                    />
+                  </>
+                )}
               </div>
               <p className="text-sm text-center font-titleFont font-medium mt-4">
                 allready have an Account?{" "}
@@ -167,15 +181,15 @@ const SignUp = () => {
               </div>
 
               <div className="mt-6 grid grid-cols-2 gap-4">
-                <a
-                  href="#"
-                  className="flex w-full items-center justify-center gap-3 rounded-md bg-[#1D9BF0] px-3 py-1.5 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1D9BF0]"
+                <btn
+                  onClick={() => signIn("google", { callbackUrl: callbackUrl })}
+                  className=" cursor-pointer flex w-full items-center justify-center gap-3 rounded-md bg-[#1D9BF0] px-3 py-1.5 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1D9BF0]"
                 >
                   {/* <svg className="h-5 w-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M6.29 18.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0020 3.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.073 4.073 0 01.8 7.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 010 16.407a11.616 11.616 0 006.29 1.84" />
                   </svg> */}
                   <span className="text-sm font-semibold leading-6">Google</span>
-                </a>
+                </btn>
 
                 {/* <a
                   href="#"

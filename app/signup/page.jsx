@@ -1,9 +1,9 @@
 import SignUp from "@components/SignUp";
 
-const page = () => {
+const page = ({ searchParams: { callbackUrl } }) => {
   return (
     <div>
-      <SignUp />
+      <SignUp callbackUrl={callbackUrl || "/"} />
     </div>
   );
 };

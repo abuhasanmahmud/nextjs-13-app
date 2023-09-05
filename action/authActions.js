@@ -16,7 +16,8 @@ export async function signUpCredentials({ username, email, password }) {
     const user = await User.findOne({ email });
     //     throw new Error("hudai error dilam");
     if (user) {
-      throw new Error("email allready exists");
+      // return throw new Error("email allready exists");
+      return { err: "Email allready exist" };
     }
     if (password) {
       password = await bcrypt.hash(password, 12);
@@ -32,8 +33,8 @@ export async function signUpCredentials({ username, email, password }) {
 
     return { msg: "sing up success chek your email to complete the registration" };
   } catch (error) {
-    console.log("error", error);
-    // redirect(`/errors?error=${error.message}`);
+    console.log("error in signup with cr", error);
+    redirect(`/errors?error=${error.message}`);
   }
 }
 
@@ -50,7 +51,7 @@ export async function verifyWithCredentials(token) {
 
     return { msg: "verify success" };
   } catch (error) {
-    console.log("error", error);
+    console.log("error in verify with credentials----", error);
     redirect(`/errors?error=${error.message}`);
   }
 }
